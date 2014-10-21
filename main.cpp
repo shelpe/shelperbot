@@ -279,7 +279,20 @@ int main( int argc, char** argv)
 			ReplyList[5] = "hello newfriend";
 			sayMessage( BotSocket, (string ) ReplyList[rand() % 6], TargetChannel);
 		}
-		
+	
+		if ( ( Buffer_s.find( "PRIVMSG", 0) != -1) && ( Buffer_s.find( ":rincewind!") != -1) && ( Buffer_s.find( BotNickPrivMsg, 0) == -1))
+		{
+			srand( time( NULL));
+			string ReplyList[6];
+			ReplyList[0] = "excellent P OS T rincewind!!1";
+			ReplyList[1] = "wow i like it rincewind";
+			ReplyList[2] = "rincewind good comment";
+			ReplyList[3] = "incredible job rincewind im proud of u";
+			ReplyList[4] = "rincewind nice posttttt XD";
+			ReplyList[5] = "whoa rincewind i'm liking it";
+			sayMessage( BotSocket, (string ) ReplyList[rand() % 6], TargetChannel);
+		}
+
 		/*
 		 * rincewind shitposting
 		 */
