@@ -28,6 +28,10 @@ int handlePossibleFlag( string PossibleFlag) // this is where command line optio
 	{
 		return 1;
 	}
+	if ( PossibleFlag.compare( "--mock") == 0)
+	{
+		return 2;
+	}
 	else
 	{
 		return -1;
@@ -151,6 +155,14 @@ int main( int argc, char** argv)
 	string BotNick = string ( argv[3]); //third argument is the initial bot nickname
 	string TargetChannel = string ( argv[4]); //fourth argument is the channel where all messages will be handled.  it can even be a user too!
 	
+	string Mock = ":";
+	if ( findFlag( Flags, 2) == true)
+	{
+		cout << "Enter person to mock: ";
+		cin >> Mock;
+	}
+	Mock.append( "!");
+
 	int BotSocket = connectSocket( IRCServer, IRCPort);
 	
 	int RecieveCount = 0;
@@ -280,26 +292,19 @@ int main( int argc, char** argv)
 			sayMessage( BotSocket, (string ) ReplyList[rand() % 6], TargetChannel);
 		}
 	
-		if ( ( Buffer_s.find( "PRIVMSG", 0) != -1) && ( Buffer_s.find( ":rincewind!") != -1) && ( Buffer_s.find( BotNickPrivMsg, 0) == -1))
+		if ( ( Buffer_s.find( "PRIVMSG", 0) != -1) && ( Buffer_s.find( Mock) != -1) && ( Buffer_s.find( BotNickPrivMsg, 0) == -1))
 		{
 			srand( time( NULL));
 			string ReplyList[6];
-			ReplyList[0] = "excellent P OS T rincewind!!1";
-			ReplyList[1] = "wow i like it rincewind";
-			ReplyList[2] = "rincewind good comment";
-			ReplyList[3] = "incredible job rincewind im proud of u";
-			ReplyList[4] = "rincewind nice posttttt XD";
-			ReplyList[5] = "whoa rincewind i'm liking it";
+			ReplyList[0] = "excellent P OS T "; ReplyList[0].append( Mock); ReplyList[0].append( "!!1");
+			ReplyList[1] = "wow i like it "; ReplyList[1].append( Mock);
+			ReplyList[2] = Mock; ReplyList[2].append( " good comment");
+			ReplyList[3] = "incredible job "; ReplyList[3].append( Mock); ReplyList[3].append( " im proud of u");
+			ReplyList[4] = Mock; ReplyList[4].append( " nice posttttt XD");
+			ReplyList[5] = "whoa "; ReplyList[5].append( Mock); ReplyList[5].append( " i'm liking it");
 			sayMessage( BotSocket, (string ) ReplyList[rand() % 6], TargetChannel);
 		}
 
-		/*
-		 * rincewind shitposting
-		 */
-		if ( ( Buffer_s.find( "PRIVMSG", 0) != -1) && ( Buffer_s.find( "http://a.pomf.se/fedrlf.jpg", Buffer_s.find( "PRIVMSG", 0)) != -1) && ( Buffer_s.find( BotNickPrivMsg, 0) == -1))
-		{
-			sayMessage( BotSocket, (string ) "f e d relf dot  GAY  peg xD #x-D rincewind da best rt 4 folos", TargetChannel);
-		}
 
 		if ( ByteCount == 0)
 		{
