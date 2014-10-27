@@ -292,7 +292,7 @@ int main( int argc, char** argv)
 			sayMessage( BotSocket, (string ) ReplyList[rand() % 6], TargetChannel);
 		}
 	
-		if ( ( Buffer_s.find( "PRIVMSG", 0) != -1) && ( Buffer_s.find( Mock) != -1) && ( Buffer_s.find( BotNickPrivMsg, 0) == -1))
+		if ( ( Buffer_s.find( "PRIVMSG", 0) != -1) && ( Buffer_s.find( Mock) != -1) && ( Buffer_s.find( BotNickPrivMsg, 0) == -1) && ( findFlag( Flags, 2) == true))
 		{
 			srand( time( NULL));
 			string ReplyList[6];
