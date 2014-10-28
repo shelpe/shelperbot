@@ -28,7 +28,7 @@ int handlePossibleFlag( string PossibleFlag) // this is where command line optio
 	{
 		return 1;
 	}
-	if ( PossibleFlag.compare( "--mock") == 0)
+		if ( PossibleFlag.compare( "--mock") == 0)
 	{
 		return 2;
 	}
@@ -77,6 +77,13 @@ void sayMessage( int BotSocket, string Message, string Channel) // says a messag
 	Channel.append( " :");
 	Channel.append( Message);
 	sendData( BotSocket, prepareCommand( "PRIVMSG ", Channel));
+}
+
+void sayAction( int BotSocket, string Message, string Channel) // says a message to the channel specified in launch options
+{
+	Channel.append( " :");
+	Channel.append( Message);
+	sendData( BotSocket, prepareCommand( "ACTION ", Channel));
 }
 
 int connectSocket( char* TargetName, char* TargetPort) // sets up a socket to talk to ircd
@@ -305,6 +312,26 @@ int main( int argc, char** argv)
 			sayMessage( BotSocket, (string ) ReplyList[rand() % 6], TargetChannel);
 		}
 
+		string HugPhrase = "PRIVMSG ";
+		HugPhrase.append( TargetChannel);
+		HugPhrase.append( " :.hug ");
+		
+		if ( ( Buffer_s.find( HugPhrase, 0) != -1) && ( Buffer_s.find( BotNickPrivMsg, 0) == -1))
+		{
+			Buffer_s.erase( 0, Buffer_s.find( HugPhrase, 0) + HugPhrase.size());
+			if ( Buffer_s.find( "\r\n") != -1)
+			{
+				Buffer_s.erase( Buffer_s.find( "\r\n"), Buffer_s.size() - 1);
+			}
+			cout << Buffer_s << endl;
+
+			srand( time( NULL));
+			string ReplyList[6];
+			ReplyList[0] = "\001ACTION warmly hugs "; ReplyList[0].append( Buffer_s);
+			ReplyList[1] = "\001ACTION grabs "; ReplyList[1].append( Buffer_s); ReplyList[1].append( " and squeezes hard");
+			ReplyList[2] = "\001ACTION wraps her arms around "; ReplyList[2].append( Buffer_s);
+			sayMessage( BotSocket, (string ) ReplyList[rand() % 3], TargetChannel);
+		}
 
 		if ( ByteCount == 0)
 		{
