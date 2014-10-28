@@ -181,6 +181,11 @@ int main( int argc, char** argv)
 		RecieveCount++;
 		
 
+		ByteCount = recv( BotSocket, Buffer, MAXDATASIZE - 1, 0);
+		Buffer[ByteCount] = '\0';//we string now
+		string Buffer_s = string (Buffer);
+		cout << Buffer_s;
+
 		if ( RecieveCount == 2)
 		{
 			sendData( BotSocket, prepareCommand( "NICK ", BotNick));
@@ -194,14 +199,10 @@ int main( int argc, char** argv)
 			cout << TargetChannel << endl;
 			sendData( BotSocket, prepareCommand( "JOIN ", TargetChannel));
 		}
-		ByteCount = recv( BotSocket, Buffer, MAXDATASIZE - 1, 0);
-		Buffer[ByteCount] = '\0';//we string now
-		string Buffer_s = string (Buffer);
-		cout << Buffer_s;
-
-		if ( Buffer_s.find( "PING", 0) != -1)
+		
+		if ( Buffer_s.find( "PING :", 0) != -1)
 		{ 
-			Buffer_s.erase( 0, 6);
+			Buffer_s.erase( Buffer_s.find( "PING :"), Buffer_s.find( "PING :") + 6);
 			sendData( BotSocket, prepareCommand( "PONG :", Buffer_s));
 		}
 		string BotNickCommandFormat = BotNick;
