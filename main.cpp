@@ -38,18 +38,6 @@ int handlePossibleFlag( string PossibleFlag) // this is where command line optio
 	}
 }
 
-bool findFlag( int Flags[FLAGCOUNT], int TargetFlag)  // used to read command line options
-{
-	for ( int i = 0; i < FLAGCOUNT; i++)
-	{
-		if ( Flags[i] == TargetFlag)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
 bool sendData( int BotSocket, string Message) // send data through a socket
 {
 	int BytesSent = send( BotSocket, Message.c_str(), Message.length(), 0);
@@ -122,54 +110,24 @@ int connectSocket( char* TargetName, char* TargetPort) // sets up a socket to ta
 }
 
 
-int main( int argc, char** argv)
+int main()
 {
-	int Flags[FLAGCOUNT];
-	for ( int i = 0; i < FLAGCOUNT; i++)
+	char* IRCServer, IRCPort;
+	string BotNick, TargetChannel;
+	cout << "IRC Server Address: ";
+	cin >> IRCServer; //the first argument will be the target name
+	cout << "IRC Server Port: ";
+	cin >> IRCPort; //the second argument will be the target port
+	cout << "Bot Nickname: ";
+	cin >> BotNick; //third argument is the initial bot nickname
+	cout << "Channel to idle in ";
+	cin >> TargetChannel; //fourth argument is the channel where all messages will be handled.  it can even be a user too!
+	do
 	{
-		Flags[i] = -1;
-	}
-	int f = 0;
-	
-	string argv_s[argc];
-	for ( int j = 0; j < argc; j++)
-	{
-		argv_s[j] = ( string) argv[j];
-	}
-	
-	for ( int ArgsRead = 1; ArgsRead < argc; ArgsRead++)
-	{
-		if ( argv_s[ArgsRead].find( "--") != -1)
-		{
-			Flags[f] = handlePossibleFlag( argv_s[ArgsRead]);
-			argv[ArgsRead] = ( char*) argv_s[ArgsRead + 1].c_str();
-			f++;
-			argc--;
-		}
-	}
-	if ( argc != 5)
-	{
-		cout << "usage: " << argv[0] << " server port nickname channel\n";
-		exit(0);
-	}
-	for ( int i = 0; i < FLAGCOUNT; i++)
-	{
-		cout << Flags[i] << endl;
-	}
-	
-	char* IRCServer = argv[1]; //the first argument will be the target name
-	char* IRCPort = argv[2]; //the second argument will be the target port
-	string BotNick = string ( argv[3]); //third argument is the initial bot nickname
-	string TargetChannel = string ( argv[4]); //fourth argument is the channel where all messages will be handled.  it can even be a user too!
-	
-	string Mock = ":";
-	if ( findFlag( Flags, 2) == true)
-	{
-		cout << "Enter person to mock: ";
-		cin >> Mock;
-	}
-	Mock.append( "!");
-
+		cout << "Post comment content with images? (y/n): ";
+		char ImageComment;
+		cin >> ImageComment;
+	} while ( ImageComment != 'y' || ImageComment != 'n');
 	int BotSocket = connectSocket( IRCServer, IRCPort);
 	
 	int RecieveCount = 0;
@@ -274,7 +232,7 @@ int main( int argc, char** argv)
 			struct ImageInfoResults Results = getFourChanImageInfo( Buffer_s);
 			struct fourchanpost_t ImagePostTarget = Results.ImageInfo;
 			string Message = Results.Message;
-			if ( findFlag( Flags, 1) == false)
+			if ( ImageComment == 'y')
 			{
 				Message.append( " ---> ");
 				Message.append( grabFourChanPostText( ImagePostTarget));
@@ -300,19 +258,6 @@ int main( int argc, char** argv)
 			sayMessage( BotSocket, (string ) ReplyList[rand() % 6], TargetChannel);
 		}
 	
-		if ( ( Buffer_s.find( "PRIVMSG", 0) != -1) && ( Buffer_s.find( Mock) != -1) && ( Buffer_s.find( BotNickPrivMsg, 0) == -1) && ( findFlag( Flags, 2) == true))
-		{
-			srand( time( NULL));
-			string ReplyList[6];
-			ReplyList[0] = "excellent P OS T "; ReplyList[0].append( Mock); ReplyList[0].append( "!!1");
-			ReplyList[1] = "wow i like it "; ReplyList[1].append( Mock);
-			ReplyList[2] = Mock; ReplyList[2].append( " good comment");
-			ReplyList[3] = "incredible job "; ReplyList[3].append( Mock); ReplyList[3].append( " im proud of u");
-			ReplyList[4] = Mock; ReplyList[4].append( " nice posttttt XD");
-			ReplyList[5] = "whoa "; ReplyList[5].append( Mock); ReplyList[5].append( " i'm liking it");
-			sayMessage( BotSocket, (string ) ReplyList[rand() % 6], TargetChannel);
-		}
-
 		string HugPhrase = "PRIVMSG ";
 		HugPhrase.append( TargetChannel);
 		HugPhrase.append( " :.hug ");
