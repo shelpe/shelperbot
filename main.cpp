@@ -112,7 +112,7 @@ int connectSocket( char* TargetName, char* TargetPort) // sets up a socket to ta
 
 int main()
 {
-	char* IRCServer, IRCPort;
+	char IRCServer[64], IRCPort[5];
 	string BotNick, TargetChannel;
 	cout << "IRC Server Address: ";
 	cin >> IRCServer; //the first argument will be the target name
@@ -122,12 +122,13 @@ int main()
 	cin >> BotNick; //third argument is the initial bot nickname
 	cout << "Channel to idle in ";
 	cin >> TargetChannel; //fourth argument is the channel where all messages will be handled.  it can even be a user too!
+	char ImageComment;
 	do
 	{
 		cout << "Post comment content with images? (y/n): ";
-		char ImageComment;
 		cin >> ImageComment;
-	} while ( ImageComment != 'y' || ImageComment != 'n');
+		cout << ImageComment;
+	} while ( ImageComment != 'y' && ImageComment != 'n');
 	int BotSocket = connectSocket( IRCServer, IRCPort);
 	
 	int RecieveCount = 0;
