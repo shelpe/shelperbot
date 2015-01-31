@@ -13,12 +13,12 @@
 #define MAXDATASIZE 256
 #define FLAGCOUNT 3
 
-#include "curlbuffer.cpp"
-#include "4chanurl.cpp"
-#include "4chanposttext.cpp"
-#include "4chanimage.cpp"
-#include "8chanurl.cpp"
-#include "8chanposttext.cpp"
+#include "curlbuffer.hpp"
+#include "4chan/url.hpp"
+#include "4chan/comment.hpp"
+#include "4chan/image.hpp"
+//#include "8chanurl.cpp"
+//#include "8chanposttext.cpp"
 
 using namespace std;
 
@@ -239,7 +239,6 @@ int main( int argc, char** argv)
 		
 		/*
 		 * Currently any 8chan functionality is broken
-		 */
 		if ( Buffer_s.find( "://8chan.co/") != -1)
 		{
 			struct eightchanpost_t PostInfo = getEightChanPostInfo( Buffer_s);
@@ -250,6 +249,8 @@ int main( int argc, char** argv)
 				sayMessage( BotSocket, EightChanPostText, TargetChannel);
 			}
 		}
+		*
+		*/
 
 		/*
 		 * shelperbot will rejoin on kick in 3 seconds

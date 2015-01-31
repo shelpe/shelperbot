@@ -1,12 +1,12 @@
 using namespace std;
 
-struct BufferStruct // stuff that makes curl work
+struct BufferStruct 
 {
 	char* Buffer;
 	size_t Size;
 };
 
-static size_t FillBuffer( void* DataPointer, size_t Size, size_t NumMemb, void* Data) // stuff that makes curl work
+static size_t FillBuffer( void* DataPointer, size_t Size, size_t NumMemb, void* Data)
 {
 	size_t RealSize = Size * NumMemb;
 	struct BufferStruct* Memory = ( struct BufferStruct*) Data;

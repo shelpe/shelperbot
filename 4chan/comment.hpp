@@ -1,4 +1,3 @@
-
 using namespace std;
 
 string fixString( string Input, string Problem, string Solution) // shitty implementation to get rid of unicode and html

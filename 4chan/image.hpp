@@ -7,7 +7,7 @@ string readJsonString ( string JsonString, jsmntok_t JsonStringInfo) // takes a 
 	return JsonString;
 }
 
-struct JsonTokenListInfo // stuff to make jsmn work
+struct JsonTokenListInfo
 {
 	int Size;
 	jsmntok_t* Tokens;

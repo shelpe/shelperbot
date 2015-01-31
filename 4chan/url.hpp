@@ -5,7 +5,7 @@ struct fourchanpost_t
 	string BoardLetter; // the board in which the post resides in
 	string ThreadNumber; // the thread in which the post resides in
 	string PostNumber; // the post number of the post
-	bool IsHttps; // i don't know why i have this
+	bool IsHttps; // if i decide to implement https 
 };
 
 struct fourchanpost_t getFourChanPostInfo( string FourChanURL) // tears apart a 4chan url to a post and gets structured info about the post the url points to
