@@ -170,23 +170,35 @@ int main( int argc, char** argv)
 	}
 	Mock.append( "!");
 
-	int BotSocket = connectSocket( IRCServer, IRCPort);
 	
-	int RecieveCount = 0;
-	int ByteCount;
+	int BotSocket, ByteCount, RecieveCount;
+	bool Connected, Registered, Joined;
 	char Buffer[MAXDATASIZE];
 
 	while(1)
 	{
-		RecieveCount++;
+		if ( Connected != true)
+		{
+			BotSocket = connectSocket( IRCServer, IRCPort);
+			Connected = true;
+			RecieveCount = 0;
+		}
+		else
+		{
+			RecieveCount++;
+		}
 		
 
 		ByteCount = recv( BotSocket, Buffer, MAXDATASIZE - 1, 0);
 		Buffer[ByteCount] = '\0';//we string now
 		string Buffer_s = string (Buffer);
 		cout << Buffer_s;
+		if ( Buffer_s.find( "PING :", 0) != -1)
+		{
+			Registered = true;
+		}
 
-		if ( RecieveCount == 2)
+		if ( Registered != true)
 		{
 			sendData( BotSocket, prepareCommand( "NICK ", BotNick));
 			string BotNick_user = BotNick;
@@ -194,7 +206,13 @@ int main( int argc, char** argv)
 			BotNick_user.append( BotNick);
 			sendData( BotSocket, prepareCommand( "USER ", BotNick_user));
 		}
-		if ( RecieveCount == 10)
+
+		if ( Buffer_s.find( "353", 0) != -1 && Buffer_s.find( BotNick, Buffer_s.find( "353", 0) + 4) != -1)
+		{
+			Joined = true;
+		}
+
+		if ( Registered == true && Joined != true)
 		{
 			cout << TargetChannel << endl;
 			sendData( BotSocket, prepareCommand( "JOIN ", TargetChannel));
@@ -329,16 +347,19 @@ int main( int argc, char** argv)
 
 			srand( time( NULL));
 			string ReplyList[6];
-			ReplyList[0] = "\001ACTION warmly hugs "; ReplyList[0].append( Buffer_s);
-			ReplyList[1] = "\001ACTION grabs "; ReplyList[1].append( Buffer_s); ReplyList[1].append( " and squeezes hard");
-			ReplyList[2] = "\001ACTION wraps her arms around "; ReplyList[2].append( Buffer_s);
+			ReplyList[0] = "\001ACTION warmly hugs "; ReplyList[0].append( Buffer_s); ReplyList[0].append( "\001");
+			ReplyList[1] = "\001ACTION grabs "; ReplyList[1].append( Buffer_s); ReplyList[1].append( " and squeezes hard"); ReplyList[1].append( "\001");
+			ReplyList[2] = "\001ACTION wraps her arms around "; ReplyList[2].append( Buffer_s); ReplyList[2].append( "\001");
 			sayMessage( BotSocket, (string ) ReplyList[rand() % 3], TargetChannel);
 		}
 
 		if ( ByteCount == 0)
 		{
 			cout << "CONNECTION CLOSED\n";
-			break;
+			Connected = false;
+			Registered = false;
+			Joined = false;
+			sleep( 5);
 		}
 	}
 
